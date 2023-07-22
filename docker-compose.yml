@@ -1,0 +1,55 @@
+version: '3'
+ 
+services:
+    php:
+        build:
+            context: ./docker
+        ports:
+            - ":9000"
+        volumes:
+            - .:/var/www/html
+            - ./docker/www.conf:/usr/local/etc/php-fpm.d/www.conf
+        environment:
+            MYSQL_USER: ${DB_USERNAME}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+        depends_on:
+            - db
+        links:
+            - db
+ 
+    nginx:
+        image: nginx:latest
+        ports:
+            - '${APP_PORT:-8900}:80'
+        volumes:
+            - .:/var/www/html
+            - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf
+        depends_on:
+            - php
+ 
+    pma:
+        image: phpmyadmin
+        restart: always
+        environment:
+            PMA_HOST: db
+            PMA_USER: "${DB_USERNAME}"
+            PMA_PASSWORD: "${DB_PASSWORD}"
+        ports:
+            - "8901:80"
+
+    db:
+        image: mysql:latest
+        restart: always
+        ports:
+            - 9906:3306
+        volumes:
+            - db_data:/var/lib/mysql
+        environment:
+            MYSQL_USER: "${DB_USERNAME}"
+            MYSQL_PASSWORD: "${DB_PASSWORD}"
+            MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+            MYSQL_DATABASE: "${DB_NAME}"
+            MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+
+volumes:
+    db_data:
