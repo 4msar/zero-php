@@ -4,7 +4,7 @@
 
 -   At first change the DB credentials & app URL (to http://localhost:8900) in `.env` file
 -   Import the demo DB `db.sql` in your DB
--   then open a terminal or command line in this project and run this command `php -S localhost:8900`.
+-   then open a terminal or command line in this project and run this command `php zero serve`.
 -   before run the php insure that your php bin folder already added in ENV path.
 -   or use static test domain by configure your server.
 -   then open your browser and put this (`http://localhost:8900`) in url.
