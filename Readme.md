@@ -1,5 +1,8 @@
 # Zero MVC
 
+Zero Logo
+![Logo](./assets/logo.jpg)
+
 ## How to run
 
 -   At first change the DB credentials & app URL (to http://localhost:8900) in `.env` file
