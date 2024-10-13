@@ -1,0 +1,37 @@
+name: Update Composer Dependencies
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Runs every Sunday at midnight
+  workflow_dispatch:  # Allows you to manually trigger the workflow
+
+jobs:
+  update-dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'  # Adjust PHP version if needed
+
+    - name: Validate composer.json and composer.lock
+      run: composer validate --strict
+
+    - name: Update dependencies
+      run: composer update
+
+    - name: Commit updated dependencies
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add composer.json composer.lock
+        git commit -m 'Update Composer dependencies'
+      continue-on-error: true
+
+    - name: Push changes
+      if: success()
+      run: git push origin HEAD:main
